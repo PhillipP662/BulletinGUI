@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bulletingui.bulletingui.HomeController">
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bulletingui.bulletingui.Controllers.HomeController">
     <!-- Menu Bar -->
     <top>
         <MenuBar>

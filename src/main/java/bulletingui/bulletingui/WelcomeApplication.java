@@ -10,6 +10,11 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 
+
+/**
+ *  Class to start the GUI
+ */
+
 public class WelcomeApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {

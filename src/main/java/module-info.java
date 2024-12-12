@@ -9,4 +9,6 @@ module bulletingui.bulletingui {
 
     opens bulletingui.bulletingui to javafx.fxml;
     exports bulletingui.bulletingui;
+    exports bulletingui.bulletingui.Controllers;
+    opens bulletingui.bulletingui.Controllers to javafx.fxml;
 }

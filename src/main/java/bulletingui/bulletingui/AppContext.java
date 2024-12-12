@@ -1,11 +1,14 @@
 package bulletingui.bulletingui;
 
 import bulletingui.bulletingui.Client.Client;
-import bulletingui.bulletingui.Server.BulletinBoardImpl;
 
 import javax.crypto.SecretKey;
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ *  Static class used to save information across different javaFX controllers
+ */
 
 public class AppContext {
     private static SecretKey sharedKey;

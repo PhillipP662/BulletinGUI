@@ -32,7 +32,7 @@ public class BulletinBoardTest {
             //Sending & Recieving
             ///////////////////////////////////////
             // Send message
-            String message1 = "Test inschalla";
+            String message1 = "Test sending message";
             Alice.send(Bob,message1);
             System.out.println("bericht1: "+message1 );
 
