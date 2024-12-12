@@ -4,6 +4,8 @@ module bulletingui.bulletingui {
     requires java.rmi;
     requires java.desktop;
 
+    opens bulletingui.bulletingui.Commen to java.rmi;
+    exports bulletingui.bulletingui.Commen;
 
     opens bulletingui.bulletingui to javafx.fxml;
     exports bulletingui.bulletingui;

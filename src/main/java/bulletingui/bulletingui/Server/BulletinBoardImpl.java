@@ -1,18 +1,44 @@
 package bulletingui.bulletingui.Server;
 
-import java.security.MessageDigest;
-import java.util.*;
+import bulletingui.bulletingui.Commen.BulletinBoard;
+import bulletingui.bulletingui.Commen.CryptoUtils;
 
-public class BulletinBoardImpl {
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+public class BulletinBoardImpl extends UnicastRemoteObject implements BulletinBoard {
     private final int numCells;
     private final List<Map<String, String>> cells; // Each cell stores 〈t, message〉 pairs
 
-    public BulletinBoardImpl(int numCells) {
+    // Uitbreiding 1: Recoverability
+    private ScheduledExecutorService backupExecutor;
+
+
+    public BulletinBoardImpl(int numCells,String backupFilePath) throws RemoteException {
+        super();
         this.numCells = numCells;
         this.cells = new ArrayList<>();
         for (int i = 0; i < numCells; i++) {
             cells.add(new HashMap<>()); // Initialize each cell
         }
+        try {
+            this.loadState(backupFilePath);
+            System.out.println("Loaded state from backup.");
+        } catch (Exception e) {
+            System.err.println("Failed to load state, initializing new board: " + e.getMessage());
+        }
+
     }
 
     // Compute the tag t = B(preimage)
@@ -27,6 +53,7 @@ public class BulletinBoardImpl {
     }
 
     // Store a message in the bulletin board
+    @Override
     public void sendWithTag(int cellId, String message, String preimage) {
         int normalizedCellId = normalizeCellId(cellId);
         String tag = computeTag(preimage); // Compute the tag
@@ -35,17 +62,34 @@ public class BulletinBoardImpl {
     }
 
     // Retrieve a message from the bulletin board
+    @Override
     public String retrieveWithTag(int cellId, String preimage) {
         int normalizedCellId = normalizeCellId(cellId);
         String tag = computeTag(preimage); // Compute the tag from the preimage
-        Map<String, String> cell = cells.get(normalizedCellId);
 
-        if (cell != null && cell.containsKey(tag)) {
-            String message = cell.remove(tag); // Retrieve and remove the message
+        Map<String, String> targetCell = cells.get(normalizedCellId);
+
+        if (targetCell != null && targetCell.containsKey(tag)) {
+            String message = targetCell.remove(tag); // Retrieve and remove the message
             System.out.println("Message retrieved from cell " + normalizedCellId + ": " + message);
             return message;
         }
-        System.out.println("No message found for tag in cell " + normalizedCellId);
+
+        // If not found, iterate over all cells in the list
+        for (int i = 0; i < cells.size(); i++) {
+            if (i == normalizedCellId) {
+                continue; // Skip the already checked cell
+            }
+            Map<String, String> cell = cells.get(i);
+            if (cell != null && cell.containsKey(tag)) {
+                String message = cell.remove(tag); // Retrieve and remove the message
+                System.out.println("Message retrieved from cell " + i + ": " + message);
+                return message;
+            }
+        }
+
+        // If the tag is not found in any cell
+        System.out.println("No message found for tag in any cell");
         return "⊥"; // Return ⊥ if no message is found
     }
 
@@ -53,4 +97,58 @@ public class BulletinBoardImpl {
     private int normalizeCellId(int cellId) {
         return (cellId % numCells + numCells) % numCells;
     }
+
+    // uitbreiding Recoverability
+    public void saveState(String filePath) throws IOException {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            out.writeObject(this.cells); // Serialize the cells list
+        }
+    }
+    public void loadState(String filePath) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
+            List<Map<String, String>> loadedCells = (List<Map<String, String>>) in.readObject();
+            this.cells.clear(); // Clear current content
+            this.cells.addAll(loadedCells); // Add all deserialized data to the existing final list
+        }
+    }
+
+    // Periodieke Backup
+    public void startPeriodicBackup(String filePath, int intervalMinutes) {
+        this.backupExecutor = Executors.newScheduledThreadPool(1);
+        this.backupExecutor.scheduleAtFixedRate(() -> {
+            try {
+                saveState(filePath);
+                System.out.println("Backup saved successfully.");
+            } catch (IOException e) {
+                System.err.println("Failed to save backup: " + e.getMessage());
+            }
+        }, 0, intervalMinutes, TimeUnit.MINUTES);
+    }
+
+    public void stopPeriodicBackup() {
+        if (this.backupExecutor != null) {
+            this.backupExecutor.shutdown();
+        }
+    }
+
+    // Integrity Validation
+    public String computeStateHash() throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        ObjectOutputStream out = new ObjectOutputStream(byteStream);
+        out.writeObject(this.cells);
+        byte[] hash = digest.digest(byteStream.toByteArray());
+        return Base64.getEncoder().encodeToString(hash);
+    }
+
+    public boolean validateBackup(String filePath, String expectedHash) throws Exception {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        try (FileInputStream fileStream = new FileInputStream(filePath)) {
+            byte[] fileBytes = fileStream.readAllBytes();
+            byte[] computedHash = digest.digest(fileBytes);
+            return Base64.getEncoder().encodeToString(computedHash).equals(expectedHash);
+        }
+    }
+
+
 }

@@ -1,10 +1,16 @@
 package bulletingui.bulletingui.Client;
 
+import bulletingui.bulletingui.Commen.BulletinBoard;
 import bulletingui.bulletingui.Commen.CryptoUtils;
+import bulletingui.bulletingui.Commen.DiffieHellmanUtils;
 import bulletingui.bulletingui.Commen.Phonebook;
 import bulletingui.bulletingui.Server.BulletinBoardImpl;
 
 import javax.crypto.SecretKey;
+import java.io.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -15,16 +21,37 @@ public class Client {
     private String firstTag; // Initial random tag
     private int firstcellId; // Initial random cell ID
 
-    private SecretKey secretKey;
-
     private Map<Client, Phonebook> phonebook; // Map of clientId -> ClientState
 
-    public Client(String id, SecretKey SharedKey) {
+    private DiffieHellmanUtils dhUtils;
+    private PublicKey otherClientPublicKey;
+    private SecretKey sessionKey; // Ephemeral session key
+    private BulletinBoard bulletinBoard;
+
+
+
+
+    public Client(String id,SecretKey SharedKey) throws Exception {
         this.id = id;
         this.firstTag = generateRandomTag();
         this.firstcellId = generateRandomCellId(10); // Assuming 10 cells
-        this.secretKey = SharedKey;
+        this.dhUtils = new DiffieHellmanUtils();
+        Registry registry = LocateRegistry.getRegistry("localhost",1099);
+        this.bulletinBoard = (BulletinBoard) registry.lookup("BulletinBoard");
 
+    }
+
+    public PublicKey getPublicKey() {
+        return dhUtils.getPublicKey();
+    }
+
+    public void setOtherClientPublicKey(PublicKey otherPublicKey) throws Exception {
+        this.otherClientPublicKey = otherPublicKey;
+        this.sessionKey = dhUtils.deriveSharedSecret(otherPublicKey);
+    }
+
+    public SecretKey getSessionKey() {
+        return this.sessionKey;
     }
 
 
@@ -125,14 +152,6 @@ public class Client {
         return phonebook1 != null ? phonebook1.getRecieveCellId() : null;
     }
 
-    public SecretKey getSecretkey(Client client){
-        Map<Client, Phonebook> phonebookMap = getPhonebook();
-        Phonebook phonebook1 = phonebookMap.get(client);
-
-        return phonebook1 != null ? phonebook1.getSecretKey() : null;
-    }
-
-
 
 
     // Setter for send tag
@@ -178,10 +197,11 @@ public class Client {
 
 
 
-    public void send(BulletinBoardImpl bulletinBoard, Client client, String message) throws Exception {
+    public void send( Client client, String message) throws Exception {
+        SecretKey sessionKey = this.getSessionKey();
+
         int Sendcellid = getSendCellId(client);
         String sendTag = getSendTag(client);
-        SecretKey secretKey = this.secretKey;
 
         int NewSendCellid = generateRandomCellId(10) ;
         String NewSendTag = generateRandomTag();
@@ -189,9 +209,14 @@ public class Client {
         setSendCellId(client,NewSendCellid);
         setSendTag(client,NewSendTag);
 
-        String Newmessage = createMessage(message,NewSendCellid,NewSendTag);
+        String macinput = createMessage(message,NewSendCellid,NewSendTag);
 
-        String encryptedFirstMessage = CryptoUtils.encrypt(Newmessage, secretKey);
+        String mac = CryptoUtils.generateHMAC(sessionKey,macinput);
+
+        String plaintext = macinput + " || " + mac;
+
+
+        String encryptedFirstMessage = CryptoUtils.encrypt(plaintext, sessionKey);
 
         bulletinBoard.sendWithTag(Sendcellid, encryptedFirstMessage, sendTag);
         System.out.println("Transmission succesfull");
@@ -199,29 +224,42 @@ public class Client {
     }
 
 
-    public String recieve(BulletinBoardImpl bulletinBoard, Client client) throws Exception {
+    public String recieve( Client client) throws Exception {
+        SecretKey sessionKey = this.getSessionKey();
         int cellid = getRecieveId(client);
         String tag = getRecieveTag(client);
-        SecretKey secretKey = this.secretKey;
 
         String encryptedRetrievedMessage = bulletinBoard.retrieveWithTag(cellid,tag);
-        String decryptedRetrievedMessage = CryptoUtils.decrypt(encryptedRetrievedMessage, secretKey);
+        String decryptedRetrievedMessage = CryptoUtils.decrypt(encryptedRetrievedMessage, sessionKey);
+
 
         int nextCellId = extractCellId(decryptedRetrievedMessage);
         String nexttag = extractNextPreimage(decryptedRetrievedMessage);
+        String hash = extractHash(decryptedRetrievedMessage);
+        String message = removeCellIdAndTag(decryptedRetrievedMessage);
+
+        String macinput = createMessage(message,nextCellId,nexttag);
+        String recomputedmac = CryptoUtils.generateHMAC(sessionKey,macinput);
+
+        if (!hash.equals(recomputedmac)) {
+            throw new SecurityException("MAC verification failed! Message tampered.");
+        }
 
         setRecieveId(client,nextCellId);
         setRecieveTag(client,nexttag);
 
-        return removeCellIdAndTag(decryptedRetrievedMessage);
+        System.out.println("Bob receives: " + message);
+        return message; // Return the plaintext message
     }
+
+
 
     public static String removeCellIdAndTag(String message) {
         String[] parts = message.split("\\|\\|");
-        if (parts.length >= 1) {
-            return parts[0].trim(); // Return the value part only
+        if (parts.length >= 4) {
+            return parts[0].trim(); // Return only the main message (first part)
         }
-        throw new IllegalArgumentException("Invalid message format: Cannot remove cell ID and tag.");
+        throw new IllegalArgumentException("Invalid message format: Cannot remove cell ID, tag, and hash.");
     }
 
 
@@ -245,9 +283,23 @@ public class Client {
         }
         throw new IllegalArgumentException("Invalid message format: Cannot extract next preimage.");
     }
-
+    private static String extractHash(String message) {
+        String[] parts = message.split("\\|\\|");
+        if (parts.length >= 4) {
+            return parts[3].trim();
+        }
+        throw new IllegalArgumentException("Invalid message format: Cannot extract hash.");
+    }
     public static String createMessage(String value, int cellId, String preimage) {
         return value + " || " + cellId + " || " + preimage;
     }
+
+    // Uitbreiding 1: Recoverabilty
+
+
+
+
+
+
 
 }

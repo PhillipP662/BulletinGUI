@@ -45,6 +45,20 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0, 2, 2); /* Subtle drop shadow */
     -fx-alignment: center; /* Center the text inside the label */
 }
+#serverOfflineLabel {
+    -fx-font-size: 28px; /* Maintain the bold size */
+    -fx-font-family: "Arial"; /* Use a clean and readable font */
+    -fx-font-weight: bold; /* Bold text for emphasis */
+    -fx-text-fill: #e41818; /* Bright red for alert text */
+    -fx-background-color: #fff3f3; /* Light red background for contrast */
+    -fx-border-color: #e41818; /* Match the text color with the border */
+    -fx-border-width: 2px; /* Add a prominent border */
+    -fx-border-radius: 10px; /* Rounded corners for a modern look */
+    -fx-background-radius: 10px; /* Match the background radius */
+    -fx-padding: 10px; /* Add internal padding for better spacing */
+    -fx-alignment: center; /* Center-align the text */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 5, 0, 2, 2); /* Subtle drop shadow */
+}
 
 /* Styling for the background (optional) */
 .anchor-pane {

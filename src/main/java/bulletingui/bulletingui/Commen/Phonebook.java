@@ -1,8 +1,9 @@
 package bulletingui.bulletingui.Commen;
 
 import javax.crypto.SecretKey;
+import java.io.*;
 
-public class Phonebook {
+public class Phonebook  {
     private String sendtag;
     private int sendCellId;
 
@@ -10,6 +11,10 @@ public class Phonebook {
 
     private int recieveCellId;
     private SecretKey secretKey;
+
+    // Uitbreiding 1: Recoverability
+    private static final long serialVersionUID = 1L; // For serialization consistency
+
 
     public Phonebook(String tag, int cellId,SecretKey secretKey) {
         this.sendtag = tag;
@@ -54,5 +59,6 @@ public class Phonebook {
     }
 
     public SecretKey getSecretKey(){return secretKey;}
+
 
 }

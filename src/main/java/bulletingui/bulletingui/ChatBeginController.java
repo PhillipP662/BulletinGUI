@@ -14,8 +14,10 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+import javax.crypto.SecretKey;
 import javax.swing.text.WrappedPlainView;
 import java.io.IOException;
+import java.rmi.ConnectException;
 
 public class ChatBeginController {
     // Window attributes
@@ -68,28 +70,8 @@ public class ChatBeginController {
 
     @FXML
     public void initialize() throws Exception {
-        // Code logic
-        // Create the shared key
-        AppContext.setSharedKey(CryptoUtils.generateKey());
-        if(AppContext.getSharedKey() != null) System.out.println("SharedKey initialized.");
-
-        // Initialize Alice and Bob (or other clients)
-        String user1Name = aliceLabel.getText();
-        String user2Name = bobLabel.getText();
-        Client user1 = new Client(user1Name, AppContext.getSharedKey());
-        Client user2 = new Client(user2Name, AppContext.getSharedKey());
-        AppContext.setClient(user1Name, user1);
-        AppContext.setClient(user2Name, user2);
-
-        // Initialize phonebooks
-        user1.InitiliaseClient(user2);
-        user2.InitiliaseClient(user1);
-        // Add the new contact to your phonebook
-        user1.updatePhonebook(user2, user2.getPhonebook());
-        user2.updatePhonebook(user1, user1.getPhonebook());
-
-        // GUI logic
-        // Handle pressing enter
+        // GUI logic --------------------------------------------
+        // Handle pressing <enter> in input field
         aliceInputField.setOnAction(event -> {
             try {
                 sendAliceMessage(event); // Call the existing method
@@ -118,7 +100,7 @@ public class ChatBeginController {
         // Send message
         String message = aliceInputField.getText();
         aliceInputField.clear();
-        if(!message.isEmpty()) user1.send(AppContext.getBulletinBoard(), user2, message);
+        if(!message.isEmpty()) user1.send(user2, message);
 
         // Show locally copy of message
         if(!message.isEmpty()) {
@@ -139,7 +121,7 @@ public class ChatBeginController {
         // Send message
         String message = bobInputField.getText();
         bobInputField.clear();
-        if(!message.isEmpty()) user2.send(AppContext.getBulletinBoard(), user1, message);
+        if(!message.isEmpty()) user2.send(user1, message);
 
         // Show locally copy of message
         if(!message.isEmpty()) {
@@ -160,7 +142,7 @@ public class ChatBeginController {
             Client user2 = AppContext.getClient(user2Name);
 
             // Receive message
-            String message = user1.recieve(AppContext.getBulletinBoard(), user2);
+            String message = user1.recieve(user2);
             if(!message.isEmpty()) {
                 aliceChatArea.appendText(user2Name + ": \t" + message + "\n");
             } else {
@@ -186,7 +168,7 @@ public class ChatBeginController {
             Client user2 = AppContext.getClient(user2Name);
 
             // Receive message
-            String message = user2.recieve(AppContext.getBulletinBoard(), user1);
+            String message = user2.recieve(user1);
             if(!message.isEmpty()) {
                 bobChatArea.appendText(user1Name + ": \t" + message + "\n");
             } else {
@@ -205,6 +187,7 @@ public class ChatBeginController {
     // Menu ---------------------------------------------------------
     public void menuHomePress(ActionEvent event) throws IOException {
         // Code logic
+        System.out.println("Going back to home");
         AppContext.reset();
 
         // GUI logic
@@ -218,23 +201,57 @@ public class ChatBeginController {
     }
     public void menuRestartPress(ActionEvent event) throws Exception {
         // Code logic
+        System.out.println("Restarting...");
         AppContext.reset();
         aliceInputField.clear();
         bobInputField.clear();
+        aliceChatArea.clear();
+        bobChatArea.clear();
 
-        // Create a new bulletin board and shared key
-        AppContext.setBulletinBoard( new BulletinBoardImpl(10));
-        if(AppContext.getBulletinBoard() != null) System.out.println("BulletinBoard initialized.");
-        initialize();
-
+        // Create a shared key
+        restartChat();
     }
     public void menuClearPress(ActionEvent event) throws IOException {
         // Code logic
+        System.out.println("Fields cleared");
         aliceInputField.clear();
         bobInputField.clear();
+        aliceChatArea.clear();
+        bobChatArea.clear();
 
         // Make the error messages invisible
         aliceReceiveMessage.setVisible(false);
         bobReceiveMessage.setVisible(false);
+    }
+
+    public void restartChat() {
+        // Code logic
+        try{
+            // Create the shared key
+            SecretKey sharedKey = CryptoUtils.generateKey();
+            AppContext.setSharedKey(sharedKey);
+            if(AppContext.getSharedKey() != null) System.out.println("SharedKey initialized.");
+
+            // Initialize Alice and Bob (or other clients)
+            String user1Name = aliceLabel.getText();
+            String user2Name = bobLabel.getText();
+            Client user1 = new Client(user1Name, sharedKey);
+            Client user2 = new Client(user2Name, sharedKey);
+            AppContext.setClient(user1Name, user1);
+            AppContext.setClient(user2Name, user2);
+
+            // Initialize phonebooks
+            user1.InitiliaseClient(user2);
+            user2.InitiliaseClient(user1);
+            // Add the new contact to your phonebook
+            user1.updatePhonebook(user2, user2.getPhonebook());
+            user2.updatePhonebook(user1, user1.getPhonebook());
+
+            // Create private keys
+            user1.setOtherClientPublicKey(user2.getPublicKey());
+            user2.setOtherClientPublicKey(user1.getPublicKey());
+        } catch (Exception e) {
+            System.out.println("Server offline");
+        }
     }
 }

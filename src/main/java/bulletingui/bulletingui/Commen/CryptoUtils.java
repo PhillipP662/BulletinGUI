@@ -28,7 +28,14 @@ public class CryptoUtils {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, key);
         byte[] decodedBytes = Base64.getDecoder().decode(encryptedMessage);
+
         return new String(cipher.doFinal(decodedBytes));
+    }
+    public static String generateHMAC(SecretKey key, String message) throws Exception {
+        Mac mac = Mac.getInstance("HmacSHA256");
+        mac.init(key);
+        byte[] hmacBytes = mac.doFinal(message.getBytes());
+        return Base64.getEncoder().encodeToString(hmacBytes); // Return Base64 encoded HMAC
     }
 
     // Convert a secret key to a Base64 string
