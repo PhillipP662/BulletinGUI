@@ -4,26 +4,31 @@
 BulletinGUI is a graphical interface for interacting with a secure and privacy-friendly bulletin board system. This project demonstrates the implementation of key concepts from the "Privately (and Unlinkably) Exchanging Messages Using a Public Bulletin Board" protocol.
 
 ## How to Run
-1. **Start the Server**  
-   Run `Server.java` to initialize the server. This sets up the backend required for the bulletin board system.
+1. **Run the Launcher**  
+   Simply execute the `Launcher` class to start both the server and the GUI in one step. This will:
+   - Start the server.
+   - Launch the `WelcomeApplication` GUI.
 
-2. **Launch the GUI**  
-   Run `WelcomeApplication.java` to open the graphical user interface. From here, you can interact with the system and test its functionality.
+2. **Optional: Run Individually**  
+   If you prefer to run the components separately:
+   - Start the server by running `Server`.
+   - Launch the GUI by running `WelcomeApplication`.
 
-3. **Optional: Without Server**  
-   If you don't start the server, you can still launch the GUI to observe how the application behaves without an active backend.
-
+3. **Explore Without Server**  
+   You can also launch the GUI without starting the server to observe how it behaves without an active backend.
+ 
 ## Features
-- Privacy-friendly message exchange simulation
-- Server-client architecture using Java RMI
-- A simple and intuitive GUI for testing and interaction
+- One-step execution with `Launcher`.
+- Privacy-friendly message exchange simulation.
+- Server-client architecture using Java RMI.
+- A simple and intuitive GUI for testing and interaction.
 
 ## Requirements
 - Java 8 or higher
-- Ensure that all dependencies are included in the classpath
+- Ensure all dependencies are included in the classpath
 
 ## Notes
-- Make sure the server is running before launching the GUI for full functionality.
-- Feel free to explore the behavior of the GUI without the server running.
+- Using the `Launcher` class is the recommended method for running the application.
+- If running components individually, ensure the server is started before launching the GUI for full functionality.
 
 Enjoy exploring BulletinGUI!
