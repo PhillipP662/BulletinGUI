@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bulletingui.bulletingui.ChatBeginController">
+    <!-- Menu Bar -->
+    <top>
+        <MenuBar>
+            <Menu text="File">
+            <items>
+               <MenuItem fx:id="menuHomeButton" mnemonicParsing="false" onAction="#menuHomePress" text="Home" />
+               <MenuItem fx:id="menuRestartButton" mnemonicParsing="false" onAction="#menuRestartPress" text="Restart" />
+            </items>
+            </Menu>
+            <Menu text="Edit">
+                <MenuItem fx:id="menuClearButton" onAction="#menuClearPress" text="Clear Messages" />
+            </Menu>
+        </MenuBar>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <AnchorPane>
+            <!-- Vertical Line Separator -->
+            <Line endX="0.0" endY="626.0" layoutX="500.0" layoutY="51.0" startX="-1.0" startY="-50.0" stroke="gray" strokeWidth="2" />
+
+            <!-- Alice Pane -->
+            <AnchorPane prefHeight="679.0" prefWidth="500.0">
+                <children>
+                    <Label fx:id="aliceLabel" layoutX="229.0" layoutY="38.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Alice" />
+                    <TextArea fx:id="aliceChatArea" editable="false" layoutX="30.0" layoutY="80.0" prefHeight="450.0" prefWidth="440.0" />
+                    <TextField fx:id="aliceInputField" layoutX="30.0" layoutY="550.0" prefWidth="340.0" />
+                    <Button fx:id="aliceSendButton" layoutX="380.0" layoutY="550.0" mnemonicParsing="false" onAction="#sendAliceMessage" text="Send" />
+               <Button fx:id="aliceReceiveButton" layoutX="30.0" layoutY="40.0" mnemonicParsing="false" onAction="#receiveAliceMessage" text="Receive" />
+               <Label id="errorMessage" fx:id="aliceReceiveMessage" alignment="CENTER" layoutX="145.0" layoutY="14.0" prefHeight="20.0" prefWidth="211.0" text="No message found..." textAlignment="CENTER" textFill="#ee1515" visible="false">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font>
+               </Label>
+                </children>
+            </AnchorPane>
+
+            <!-- Bob Pane -->
+            <AnchorPane layoutX="498.0" layoutY="-1.0" prefHeight="686.0" prefWidth="500.0">
+                <children>
+                    <Label fx:id="bobLabel" layoutX="233.0" layoutY="40.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Bob" />
+                    <TextArea fx:id="bobChatArea" editable="false" layoutX="30.0" layoutY="80.0" prefHeight="450.0" prefWidth="440.0" />
+                    <TextField fx:id="bobInputField" layoutX="30.0" layoutY="550.0" prefWidth="340.0" />
+                    <Button fx:id="bobSendButton" layoutX="380.0" layoutY="550.0" mnemonicParsing="false" onAction="#sendBobMessage" text="Send" />
+               <Button fx:id="bobReceiveButton" layoutX="30.0" layoutY="41.0" mnemonicParsing="false" onAction="#receiveBobMessage" text="Receive" />
+               <Label id="errorMessage" fx:id="bobReceiveMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="114.0" layoutY="14.0" prefHeight="20.0" prefWidth="272.0" text="No message found..." textFill="#ee1515" visible="false">
+                  <font>
+                     <Font name="System Bold" size="14.0" />
+                  </font>
+               </Label>
+                </children>
+            </AnchorPane>
+        </AnchorPane>
+    </center>
+</BorderPane>

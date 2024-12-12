@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Line?>
+
+<BorderPane prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="bulletingui.bulletingui.HomeController">
+    <!-- Menu Bar -->
+    <top>
+        <MenuBar>
+            <Menu text="Home" />
+            <Menu text="Restart" />
+            <Menu text="Clear" />
+        </MenuBar>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <AnchorPane>
+
+            <!-- Vertical Line Separator -->
+            <Line endX="0.0" endY="626.0" layoutX="500.0" layoutY="51.0" startX="-1.0" startY="-50.0" stroke="gray" strokeWidth="2" />
+            <AnchorPane prefHeight="679.0" prefWidth="501.0">
+                <children>
+                    <Label fx:id="aliceHome" alignment="CENTER" contentDisplay="CENTER" layoutX="205.0" layoutY="297.0" prefHeight="85.0" prefWidth="92.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Alice" />
+               <ImageView fitHeight="205.0" fitWidth="200.0" layoutX="151.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../Images/user.png" />
+                  </image>
+               </ImageView>
+                </children>
+            </AnchorPane>
+            <AnchorPane layoutX="499.0" layoutY="-2.0" prefHeight="682.0" prefWidth="501.0">
+                <children>
+                    <Label fx:id="bobHome" alignment="CENTER" contentDisplay="CENTER" layoutX="205.0" layoutY="299.0" prefHeight="85.0" prefWidth="92.0" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Bob" />
+               <ImageView fitHeight="205.0" fitWidth="200.0" layoutX="151.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../../Images/user.png" />
+                  </image>
+               </ImageView>
+                </children>
+            </AnchorPane>
+
+                              <!-- Initiate Button -->
+            <Button fx:id="initiateButton" alignment="CENTER" contentDisplay="CENTER" layoutX="405.0" layoutY="300.0" onAction="#initiateButton" prefHeight="78.0" prefWidth="190.0" text="Initiate" />
+        </AnchorPane>
+    </center>
+</BorderPane>

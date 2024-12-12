@@ -1,0 +1,52 @@
+/* Styling for the user labels */
+.user-label {
+    -fx-font-size: 24px;
+    -fx-font-family: "Arial";
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333; /* Dark gray text */
+}
+
+/* Styling for the initiate button */
+#initiateButton {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #2E7D32);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+#aliceHome{
+    -fx-font-size: 28px; /* Increase font size */
+    -fx-font-family: "Arial"; /* Use a clean, modern font */
+    -fx-font-weight: bold; /* Make the text bold */
+    -fx-text-fill: #333333; /* Dark gray text color */
+    -fx-background-color: #f0f8ff; /* Light blue background */
+    -fx-padding: 10px; /* Add padding around the text */
+    -fx-border-color: #0073e6; /* Blue border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-border-radius: 5px; /* Rounded corners for the border */
+    -fx-background-radius: 5px; /* Rounded corners for the background */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0, 2, 2); /* Subtle drop shadow */
+    -fx-alignment: center; /* Center the text inside the label */
+}
+#bobHome{
+    -fx-font-size: 28px; /* Increase font size */
+    -fx-font-family: "Arial"; /* Use a clean, modern font */
+    -fx-font-weight: bold; /* Make the text bold */
+    -fx-text-fill: #333333; /* Dark gray text color */
+    -fx-background-color: #f0f8ff; /* Light blue background */
+    -fx-padding: 10px; /* Add padding around the text */
+    -fx-border-color: #0073e6; /* Blue border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-border-radius: 5px; /* Rounded corners for the border */
+    -fx-background-radius: 5px; /* Rounded corners for the background */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0, 2, 2); /* Subtle drop shadow */
+    -fx-alignment: center; /* Center the text inside the label */
+}
+
+/* Styling for the background (optional) */
+.anchor-pane {
+    -fx-background-color: #f0f8ff; /* Light blue background */
+}

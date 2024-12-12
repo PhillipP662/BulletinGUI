@@ -1,0 +1,44 @@
+.errorMessage{
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+#aliceReceiveMessage{
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+#bobReceiveMessage{
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+/* General TextField Styling */
+.text-field {
+    -fx-background-color: #ffffff; /* White background */
+    -fx-border-color: #0073e6; /* Blue border */
+    -fx-border-width: 2px; /* Thicker border */
+    -fx-border-radius: 5px; /* Rounded corners for the border */
+    -fx-background-radius: 5px; /* Rounded corners for the background */
+    -fx-padding: 5px; /* Internal padding */
+    -fx-font-size: 14px; /* Larger font size */
+    -fx-font-family: "Arial"; /* Change font family */
+}
+
+/* Focused TextField Styling */
+.text-field:focused {
+    -fx-border-color: #005bb5; /* Darker blue border on focus */
+    -fx-background-color: #f0f8ff; /* Light blue background on focus */
+}
+
+/* Placeholder Text Styling (if using prompt text) */
+.text-field:prompt {
+    -fx-text-fill: #999999; /* Gray placeholder text */
+    -fx-font-style: italic; /* Italicize placeholder text */
+}
+/* Style for TextArea */
+.text-area {
+    -fx-font-size: 16px; /* Set the desired font size */
+    -fx-font-family: "Arial"; /* Set the desired font family */
+    -fx-text-fill: #333333; /* Set text color (optional) */
+}

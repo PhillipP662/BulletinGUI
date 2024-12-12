@@ -1,0 +1,45 @@
+/* General body styling */
+.root {
+    -fx-font-family: 'Arial', sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #f9f9f9, #e6e6e6);
+}
+
+/* Global MenuBar styling */
+.MenuBar {
+    -fx-background-color: #2E7D32;
+    -fx-text-fill: white;
+}
+
+.MenuBar .menu {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.MenuBar .menu:hover {
+    -fx-background-color: #388E3C;
+}
+
+/* General Button Styling */
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #2E7D32);
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-padding: 8 15;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #66BB6A, #388E3C);
+}
+
+.button:pressed {
+    -fx-background-color: #2E7D32;
+}
+
+/* Global Label Styling */
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+}

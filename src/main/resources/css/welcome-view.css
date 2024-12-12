@@ -1,0 +1,28 @@
+/* Title text */
+#welcomeText {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0, 2, 2);
+}
+
+/* Start button */
+#switchToHomeButton {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(to bottom, #4CAF50, #2E7D32);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+#switchToHomeButton:hover {
+    -fx-background-color: linear-gradient(to bottom, #66BB6A, #388E3C);
+}
+
+#switchToHomeButton:pressed {
+    -fx-background-color: #2E7D32;
+}
+
+
