@@ -1,10 +1,8 @@
 package bulletingui.bulletingui.Commen;
 
 import bulletingui.bulletingui.Client.Client;
-import bulletingui.bulletingui.Server.BulletinBoardImpl;
 
 import javax.crypto.SecretKey;
-import java.util.HashMap;
 public class BulletinBoardTest {
     public static void main(String[] args) {
         try {
@@ -112,10 +110,6 @@ public class BulletinBoardTest {
             System.out.println("Computed state hash: " + stateHash);
             boolean isValid = board.validateBackup(backupFilePath, stateHash);
             System.out.println("Backup validation result: " + isValid);*/
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
