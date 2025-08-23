@@ -9,11 +9,27 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Lokale recoverability:
- * - Slaat per peer de ChannelState (outbound/inbound) geëncrypteerd op (AES-GCM met master key).
- * - Atomic writes via *.tmp + ATOMIC_MOVE.
- * - Mini-journal voor pending sends die idempotent opnieuw verstuurd kunnen worden.
+ * SnapshotStore verzorgt de lokale recoverability van de ABB-WPES client.
+ *
+ * Functies:
+ * - Beheert een lokale master key (AES-128) die enkel op het device wordt gebruikt
+ *   om snapshots en journal entries versleuteld op te slaan.
+ * - Slaat per peer een volledige Phonebook-state (outbound en inbound ChannelState)
+ *   encrypted op als snapshot. Dit laat toe de communicatie-state te herstellen
+ *   na een crash of herstart.
+ * - Werkt met atomic writes (via *.tmp + ATOMIC_MOVE) om corrupte bestanden
+ *   te vermijden.
+ * - Houdt een mini-journal bij voor pending sends: berichten die reeds lokaal
+ *   versleuteld zijn maar mogelijk nog niet op het BulletinBoard zijn geschreven.
+ *   Deze kunnen na een crash idempotent opnieuw verstuurd worden.
+ * - Biedt helpers om snapshots en pending sends te laden, en om journal bestanden
+ *   te verwijderen na succesvolle replay.
+ *
+ * Deze klasse is essentieel om te voldoen aan de availability-eis van ABB-WPES:
+ * een bericht dat eenmaal lokaal is aangeboden gaat niet definitief verloren,
+ * zelfs niet bij crashes of herstarten van de client.
  */
+
 public final class SnapshotStore {
 
     private final Path baseDir;           // bv. state/<clientId>/

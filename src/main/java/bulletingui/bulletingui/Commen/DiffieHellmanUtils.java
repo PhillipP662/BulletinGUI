@@ -8,6 +8,21 @@ import java.security.KeyPairGenerator;
 import java.security.PublicKey;
 import java.security.spec.ECGenParameterSpec;
 
+
+/**
+ * DiffieHellmanUtils verzorgt het opzetten van een gedeeld geheim
+ * tussen twee clients via Elliptic Curve Diffie-Hellman (ECDH).
+ *
+ * Kenmerken:
+ * - Genereert bij constructie een ECDH sleutelpaar op curve secp256r1.
+ * - Biedt toegang tot de publieke sleutel om met een peer te delen.
+ * - Kan, gegeven de publieke sleutel van een andere client, het
+ *   gedeelde geheime materiaal (shared secret) afleiden.
+ *
+ * Dit gedeeld geheim vormt de basis voor sleutelafleiding via HKDF
+ * en wordt verder gebruikt voor AEAD-encryptie in het ABB-WPES protocol.
+ */
+
 public class DiffieHellmanUtils {
     private final KeyPair keyPair;
     private final KeyAgreement ka;
@@ -32,7 +47,7 @@ public class DiffieHellmanUtils {
         ka.doPhase(other, true);
         return ka.generateSecret();
     }
-
+// oude code
 //    public DiffieHellmanUtils() throws Exception {
 //        KeyPairGenerator keyPairGen = KeyPairGenerator.getInstance("DH");
 //        keyPairGen.initialize(2048);

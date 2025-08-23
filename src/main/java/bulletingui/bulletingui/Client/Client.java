@@ -16,6 +16,31 @@ import java.util.Map;
 
 import static bulletingui.bulletingui.Commen.SnapshotStore.sanitize;
 
+/**
+ * De Client-klasse stelt een ABB-WPES gebruiker voor die via het
+ * publieke BulletinBoard berichten kan uitwisselen met andere clients.
+ *
+ * Functionaliteit:
+ * - Initialiseert een unieke client met een eigen Diffie-Hellman sleutel­paar.
+ * - Kan met een andere client een bidirectioneel kanaal opzetten, waarbij
+ *   directionele AEAD-sleutels, cell-ID’s en tag-preimages worden afgesproken.
+ * - Verstuurt berichten naar het bulletin board:
+ *   encryptie via AES-GCM, toevoeging van nextCell en nextTag,
+ *   en een ratchet van de sleutel voor forward secrecy.
+ * - Ontvangt berichten van een peer door de juiste cel en tag-preimage op
+ *   te vragen en het bericht te decrypten.
+ * - Houdt de actuele kanaalstatus (Phonebook) bij per peer en slaat deze
+ *   veilig op via SnapshotStore (inclusief pending-sends voor crash recovery).
+ * - Ondersteunt herstel na crashes door pending writes opnieuw uit te voeren
+ *   en snapshots van de state te laden.
+ * - Biedt debugfunctionaliteit om de interne state (inbound/outbound) te tonen.
+ *
+ * Hiermee implementeert de klasse de clientzijde van het ABB-WPES protocol
+ * (asynchroon, unidirectioneel) en voldoet ze aan de eisen zoals beschreven
+ * in sectie 3.1 van de paper: correctheid, vertrouwelijkheid, integriteit,
+ * authenticiteit, unlinkability, forward security en (gedeeltelijke) beschikbaarheid.
+ */
+
 
 public class Client {
 
@@ -134,6 +159,9 @@ public class Client {
 
         // Encrypt (AEAD)
         final String enc = CryptoUtils.encryptAEAD(payload, k);
+
+
+        snapshots.writePendingSend(peer.getId(), currIdx, currPre, enc);
 
         // Schrijf & update alleen bij succes
         try {
@@ -290,7 +318,7 @@ public class Client {
 
 
 
-
+// Oude code
 //    private final String id; // Client's unique identifier
 //    private String firstTag; // Initial random tag
 //    private int firstcellId; // Initial random cell ID

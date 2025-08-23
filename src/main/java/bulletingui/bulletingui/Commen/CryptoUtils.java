@@ -11,6 +11,24 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Base64;
 
+
+/**
+ * CryptoUtils biedt cryptografische hulpfuncties die gebruikt worden
+ * door het ABB-WPES protocol.
+ *
+ * Belangrijkste functies:
+ * - Authenticated Encryption (AES/GCM/NoPadding) met willekeurige 96-bit IV
+ *   voor vertrouwelijkheid, integriteit en authenticiteit.
+ * - HKDF (met HMAC-SHA256) om veilige sleutels af te leiden uit een
+ *   Diffie-Hellman gedeeld geheim.
+ * - Eenvoudige ratchet-functie op basis van HMAC-SHA256 om forward secrecy
+ *   te garanderen door de sleutel na elk bericht te vernieuwen.
+ * - Hulpfuncties voor random tag-preimages (Base64-encoded) en AES-sleutelgeneratie.
+ *
+ * Deze klasse centraliseert alle crypto-logica zodat de Client en Server
+ * klassen zich kunnen focussen op protocolstappen. Correct gebruik van
+ * deze functies is cruciaal voor de veiligheid van ABB-WPES.
+ */
 public class CryptoUtils {
 
     private static final SecureRandom RNG = new SecureRandom();
@@ -100,14 +118,14 @@ public class CryptoUtils {
         return Base64.getEncoder().encodeToString(t);
     }
 
-
-
     // Generate a new AES key
     public static SecretKey generateKey() throws Exception {
         KeyGenerator keyGen = KeyGenerator.getInstance("AES");
         keyGen.init(128); // AES-128
         return keyGen.generateKey();
     }
+
+// Oude code
 //
 //    // Encrypt a message using a secret key
 //    public static String encrypt(String message, SecretKey key) throws Exception {

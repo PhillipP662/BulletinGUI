@@ -16,12 +16,34 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+/**
+ * BulletinBoardImpl is de server-side implementatie van het publieke bulletin board
+ * waarop clients berichten kunnen plaatsen en ophalen.
+ *
+ * Functies:
+ * - Beheert een vaste set van cells, waarin elk bericht wordt opgeslagen als
+ *   〈tag, message〉-paar. De tag = SHA-256(preimage) garandeert dat alleen de
+ *   juiste ontvanger het bericht kan verwijderen.
+ * - Implementatie van de RMI-interface BulletinBoard:
+ *   - sendWithTag(cellId, message, preimage): slaat een bericht op in de opgegeven cel.
+ *   - retrieveWithTag(cellId, preimage): verwijdert en retourneert een bericht
+ *     indien de tag overeenkomt, anders ⊥.
+ * - Ondersteunt recoverability via state-serialisatie naar disk en periodieke
+ *   automatische back-ups.
+ * - Biedt functies voor integriteitscontrole van de board-state via SHA-256 hashes
+ *   en validatie van back-upbestanden.
+ *
+ * Opzet:
+ * - Wordt als RMI-remote object geëxporteerd zodat clients op afstand
+ *   cellen kunnen benaderen.
+ * - Volgt het ABB-WPES ontwerp: de server is "honest but curious" en mag berichten
+ *   opslaan, maar leert de inhoud pas als de preimage van de tag bekend is.
+ */
 
 public class BulletinBoardImpl extends UnicastRemoteObject implements BulletinBoard {
     private final int numCells;
     private final List<Map<String, String>> cells; // Each cell stores 〈t, message〉 pairs
 
-    // Uitbreiding 1: Recoverability
     private ScheduledExecutorService backupExecutor;
 
 
