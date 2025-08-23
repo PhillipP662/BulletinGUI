@@ -5,9 +5,30 @@ import bulletingui.bulletingui.Client.Client;
 import javax.crypto.SecretKey;
 import java.io.*;
 
+
+/**
+ * Phonebook houdt de communicatie-state bij tussen twee clients
+ * in het ABB-WPES protocol.
+ *
+ * Functies:
+ * - Bevat voor elke richting een ChannelState (outbound en inbound).
+ *   Elke ChannelState bevat:
+ *   - de huidige AES-sleutel (met ratchet mechanisme),
+ *   - het cellId op het bulletin board waar het volgende bericht
+ *     moet worden geplaatst of opgehaald,
+ *   - de bijhorende tag-preimage.
+ * - Wordt door de Client gebruikt om bij te houden waar te schrijven,
+ *   waar te lezen en welke sleutel daarbij hoort.
+ * - Ondersteunt initialisatie (empty) en eenvoudige getters/setters
+ *   voor state-updates na elke send/receive.
+ *
+ * Hiermee vormt Phonebook de kern van de "per-peer" state die nodig is
+ * om berichten asynchroon en veilig uit te wisselen.
+ */
+
+
+
 public class Phonebook  {
-
-
 
     public static class ChannelState {
         private SecretKey key;
@@ -66,7 +87,7 @@ public class Phonebook  {
                 ", inbound=" + inbound +
                 '}';
     }
-
+// Oude code
 //    private String sendtag;
 //    private int sendCellId;
 //
