@@ -15,6 +15,11 @@ public class Launcher {
             System.out.println("Launching WelcomeApplication...");
             //WelcomeApplication.main(new String[0]); // Call WelcomeApplication's main method
             Application.launch(WelcomeApplication.class, args);
+
+            // Execution resumes here when GUI is closed
+            System.out.println("GUI closed, shutting down server...");
+            Server.shutdown();
+
         } catch (Exception e) {
             System.err.println("Error occurred: " + e.getMessage());
             e.printStackTrace();

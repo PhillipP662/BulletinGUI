@@ -31,11 +31,11 @@
     -fx-background-color: #f0f8ff; /* Light blue background on focus */
 }
 
-/* Placeholder Text Styling (if using prompt text) */
-.text-field:prompt {
-    -fx-text-fill: #999999; /* Gray placeholder text */
-    -fx-font-style: italic; /* Italicize placeholder text */
-}
+/*!* Placeholder Text Styling (if using prompt text) *!*/
+/*.text-field:prompt {*/
+/*    -fx-text-fill: #999999; !* Gray placeholder text *!*/
+/*    -fx-font-style: italic; !* Italicize placeholder text *!*/
+/*}*/
 /* Style for TextArea */
 .text-area {
     -fx-font-size: 16px; /* Set the desired font size */

@@ -29,16 +29,16 @@ public class BulletinBoardUpdated {
         System.out.println("----------------------------------------------");
 
 
-//        System.out.println("Send and recieve");
-//        // Alice -> Bob
-//        Alice.sendTo(Bob, "Sup Bob!");
-//        String r1 = Bob.receiveFrom(Alice);
-//        System.out.println("Bob ontving: " + r1);
-//
-//        // Bob -> Alice
-//        Bob.sendTo(Alice, "Hoi Alice!");
-//        String r2 = Alice.receiveFrom(Bob);
-//        System.out.println("Alice ontving: " + r2);
+        System.out.println("Send and recieve");
+        // Alice -> Bob
+        Alice.sendTo(Bob, "Sup Bob!");
+        String r1 = Bob.receiveFrom(Alice);
+        System.out.println("Bob ontving: " + r1);
+
+        // Bob -> Alice
+        Bob.sendTo(Alice, "Hoi Alice!");
+        String r2 = Alice.receiveFrom(Bob);
+        System.out.println("Alice ontving: " + r2);
 
 
         Alice.recoverFromDiskWith(Bob);
